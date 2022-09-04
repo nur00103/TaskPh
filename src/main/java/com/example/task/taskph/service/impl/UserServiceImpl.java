@@ -39,9 +39,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseModel<UserResponse> save(UserRequest userRequest) {
-
+        List<Status> statusList=statusRepo.findAll();
         if (userRequest==null){
            throw new MyException(ExceptionEnum.BAD_REQUEST);
+        }
+        if (statusList.isEmpty() || statusList==null){
+            Status status1=new Status();
+            status1.setStatus("online");
+            statusRepo.save(status1);
+            Status status2=new Status();
+            status2.setStatus("offline");
+            statusRepo.save(status2);
         }
         User user=new User();
         BeanUtils.copyProperties(userRequest,user);
@@ -52,7 +60,7 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
         UserResponse userResponse=convertToRes(user);
         return ResponseModel.<UserResponse>builder().result(userResponse)
-                .status(ExceptionEnum.SUCCESS.getMessage()).code(ExceptionEnum.SUCCESS.getCode()).build();
+                .status(ExceptionEnum.SUCCESS.getMessage()).error(false).code(ExceptionEnum.SUCCESS.getCode()).build();
     }
 
     @Override
@@ -77,7 +85,7 @@ public class UserServiceImpl implements UserService {
             throw new MyException(ExceptionEnum.UNKNOWN);
         }
         return ResponseModel.<StatusResponse>builder().result(statusResponse)
-                .status(ExceptionEnum.SUCCESS.getMessage()).code(ExceptionEnum.SUCCESS.getCode()).build();
+                .status(ExceptionEnum.SUCCESS.getMessage()).error(false).code(ExceptionEnum.SUCCESS.getCode()).build();
     }
 
     @Override
@@ -88,9 +96,9 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findById(id).orElseThrow(()->new MyException(ExceptionEnum.USER_NOT_FOUND));
         UserResponse userResponse=UserResponse.builder().id(user.getId())
                 .name(user.getName()).surname(user.getSurname())
-                .email(user.getEmail()).photoUrl(user.getPhoto()).build();
+                .email(user.getEmail()).status(user.getStatus().getStatus()).photoUrl(user.getPhoto()).build();
         return ResponseModel.<UserResponse>builder().result(userResponse).status(ExceptionEnum.SUCCESS.getMessage())
-                .code(ExceptionEnum.SUCCESS.getCode()).build();
+                .code(ExceptionEnum.SUCCESS.getCode()).error(false).build();
     }
 
     private UserResponse convertToRes(User user){

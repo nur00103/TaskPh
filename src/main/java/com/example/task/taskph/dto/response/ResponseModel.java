@@ -10,5 +10,6 @@ public class ResponseModel <T>{
     private T result;
     private String status;
     private int code;
+    private boolean error;
 
 }

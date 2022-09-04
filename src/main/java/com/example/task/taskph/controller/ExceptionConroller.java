@@ -1,6 +1,8 @@
 package com.example.task.taskph.controller;
 
 import com.example.task.taskph.dto.response.ErrorResponse;
+import com.example.task.taskph.dto.response.ResponseModel;
+import com.example.task.taskph.dto.response.UserResponse;
 import com.example.task.taskph.enums.ExceptionEnum;
 import com.example.task.taskph.exception.MyException;
 import org.springframework.http.HttpStatus;
@@ -16,33 +18,35 @@ public class ExceptionConroller {
 
     @ExceptionHandler(MyException.class)
 //    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse expMy(MyException myException){
-        return ErrorResponse.builder().message(myException.getMessage())
-                .code(myException.getCode()).build();
+    public ResponseModel<UserResponse> expMy(MyException myException){
+        return ResponseModel.<UserResponse>builder().status(myException.getMessage())
+                .code(myException.getCode()).result(null).error(true).build();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public  ErrorResponse expReq(MethodArgumentTypeMismatchException e){
-        return ErrorResponse.builder().message(ExceptionEnum.INPUT.getMessage())
-                .code(ExceptionEnum.INPUT.getCode()).build();
+    public  ResponseModel<UserResponse> expReq(MethodArgumentTypeMismatchException e){
+        return ResponseModel.<UserResponse>builder().status(ExceptionEnum.INPUT.getMessage())
+                .code(ExceptionEnum.INPUT.getCode()).result(null).error(true).build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse exceptionInput(MethodArgumentNotValidException e){
-        return ErrorResponse.builder().code(ExceptionEnum.BAD_REQUEST.getCode())
-                .message(ExceptionEnum.BAD_REQUEST.getMessage()).build();
+    public ResponseModel<UserResponse> exceptionInput(MethodArgumentNotValidException e){
+        return ResponseModel.<UserResponse>builder().status(ExceptionEnum.BAD_REQUEST.getMessage())
+                .code(ExceptionEnum.BAD_REQUEST.getCode()).result(null).error(true).build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ErrorResponse exceptionAll(Exception e){
-        return ErrorResponse.builder().message(e.getMessage()).code(404).build();
+    public ResponseModel<UserResponse> exceptionAll(Exception e){
+        return ResponseModel.<UserResponse>builder().status(e.getMessage())
+                .code(404).result(null).error(true).build();
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ErrorResponse exceptionAllRunTime(RuntimeException e){
-        return ErrorResponse.builder().message(e.getMessage()).code(404).build();
+    public ResponseModel<UserResponse> exceptionAllRunTime(RuntimeException e){
+        return ResponseModel.<UserResponse>builder().status(e.getMessage())
+                .code(404).result(null).error(true).build();
     }
 
 
