@@ -4,9 +4,11 @@ import lombok.Data;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Data
+
 public class User {
 
     @Id
@@ -28,6 +30,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
+
+
+    private Timestamp statusDate;
 
 
 }

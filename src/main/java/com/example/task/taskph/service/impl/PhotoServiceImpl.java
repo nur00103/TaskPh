@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -72,8 +73,8 @@ public class PhotoServiceImpl implements PhotoService {
         if(multipartFile.isEmpty()) {
             throw new MyException(ExceptionEnum.PHOTO);
         }
-        String fileName = multipartFile.getOriginalFilename();
-        String fileLocalPath = localPath + fileName;
+        String fileName = multipartFile.getOriginalFilename() ;
+        String fileLocalPath = localPath + UUID.randomUUID() + fileName;
         File file = new File(fileLocalPath);
         try {
             file.createNewFile();

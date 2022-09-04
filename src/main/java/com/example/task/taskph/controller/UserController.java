@@ -1,5 +1,6 @@
 package com.example.task.taskph.controller;
 
+import com.example.task.taskph.dto.request.FilterUserReq;
 import com.example.task.taskph.dto.request.UserRequest;
 import com.example.task.taskph.dto.response.ResponseModel;
 import com.example.task.taskph.dto.response.StatusResponse;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ResponseModel<UserResponse> saveUser(@RequestBody @Valid UserRequest userRequest){
+    public ResponseModel<UserResponse> saveUser(@RequestBody @Valid UserRequest userRequest) throws ParseException {
         return userService.save(userRequest);
     }
 
@@ -38,5 +40,9 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @PostMapping("/filter")
+    public ResponseModel<List<UserResponse>> getUserByFilter(@RequestBody FilterUserReq filterUserReq) throws ParseException {
+        return userService.getUserByFilter(filterUserReq);
+    }
 
 }
