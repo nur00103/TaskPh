@@ -1,7 +1,9 @@
 package com.example.task.taskph.service.impl;
 
 import com.example.task.taskph.dto.request.UserRequest;
+import com.example.task.taskph.dto.response.UserResponse;
 import com.example.task.taskph.entity.Status;
+import com.example.task.taskph.entity.User;
 import com.example.task.taskph.enums.ExceptionEnum;
 import com.example.task.taskph.exception.MyException;
 import com.example.task.taskph.repository.StatusRepo;
@@ -11,9 +13,13 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,11 +47,32 @@ public class UserServiceImplTest {
                 .build();
         Status status=new Status(1L,"online");
         Status status1=new Status(2L,"offline");
+        User user=new User();
+        user.setId(1L);
+        user.setName("Ali");
+        user.setSurname("Aliyev");
+        user.setPhoto("test.url");
+        user.setEmail("alialiyev@mail.ru");
+        user.setStatus(status);
+        User expectedUser=user;
         List<Status> statusList=new ArrayList<>();
         statusList.add(status);
         statusList.add(status1);
+        Status expected=new Status(1L,"online");
+        List<Status> expectedList=statusList;
 
         Mockito.when(statusRepo.findAll()).thenReturn(statusList);
+        Mockito.when(statusRepo.findById(status.getId())).thenReturn(Optional.of(expected));
+        Mockito.when(userRepo.save(user)).thenReturn(expectedUser);
+
+        List<Status> actualList=statusRepo.findAll();
+        Status actual=statusRepo.findById(status.getId()).get();
+        User actualUser=userRepo.save(user);
+
+        assertEquals(expectedList,actualList);
+        assertEquals(expected,actual);
+        assertEquals(expectedUser,actualUser);
+
 
     }
 
@@ -82,5 +109,29 @@ public class UserServiceImplTest {
 
         assertEquals(status,actual);
         assertEquals(status1,actual1);
+
+    }
+
+    @Test
+    public void convertToRes_Success(){
+        User user=new User();
+        Status status=new Status(1L,"online");
+        user.setId(1L);
+        user.setName("Ali");
+        user.setSurname("Aliyev");
+        user.setPhoto("test.url");
+        user.setEmail("alialiyev@mail.ru");
+        user.setStatus(status);
+
+        UserResponse userResponse= UserResponse.builder().id(user.getId()).name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail()).photoUrl(user.getPhoto())
+                .status(user.getStatus().getStatus()).build();
+        UserResponse expected=userResponse;
+
+        UserResponse actual=userService.convertToRes(user);
+
+        assertEquals(expected,actual);
+
     }
 }

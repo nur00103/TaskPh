@@ -102,9 +102,7 @@ public class UserServiceImpl implements UserService {
             throw new MyException(ExceptionEnum.INPUT);
         }
         User user=userRepo.findById(id).orElseThrow(()->new MyException(ExceptionEnum.USER_NOT_FOUND));
-        UserResponse userResponse=UserResponse.builder().id(user.getId())
-                .name(user.getName()).surname(user.getSurname())
-                .email(user.getEmail()).status(user.getStatus().getStatus()).photoUrl(user.getPhoto()).build();
+        UserResponse userResponse=convertToRes(user);
         return ResponseModel.<UserResponse>builder().result(userResponse).status(ExceptionEnum.SUCCESS.getMessage())
                 .code(ExceptionEnum.SUCCESS.getCode()).error(false).build();
     }
@@ -139,7 +137,7 @@ public class UserServiceImpl implements UserService {
                 .error(false).build();
     }
 
-    private UserResponse convertToRes(User user){
+    public UserResponse convertToRes(User user){
         return UserResponse.builder().id(user.getId()).name(user.getName()).surname(user.getSurname())
                 .email(user.getEmail()).photoUrl(user.getPhoto()).status(user.getStatus().getStatus()).build();
 

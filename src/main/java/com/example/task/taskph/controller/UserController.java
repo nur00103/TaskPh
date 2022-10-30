@@ -40,7 +40,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     public ResponseModel<List<UserResponse>> getUserByFilter(@RequestBody FilterUserReq filterUserReq) throws ParseException {
         return userService.getUserByFilter(filterUserReq);
     }
