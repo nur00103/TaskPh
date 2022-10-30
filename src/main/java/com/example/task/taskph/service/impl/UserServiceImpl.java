@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         if (userRequest==null){
            throw new MyException(ExceptionEnum.BAD_REQUEST);
         }
-        if (statusList.isEmpty() || statusList==null){
+        if (statusList.isEmpty()){
             Status status1=new Status();
             status1.setStatus("online");
             statusRepo.save(status1);
